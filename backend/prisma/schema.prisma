@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  phone     String?
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Mechanic {
+  id        Int       @id @default(autoincrement())
+  name      String
+  status    String    @default("Available") // Available, Busy, Offline
+  jobsDone  Int       @default(0)
+  lat       Float?
+  lng       Float?
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Service {
+  id          Int       @id @default(autoincrement())
+  name        String
+  category    String
+  price       Float
+  bookings    Booking[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Booking {
+  id          Int       @id @default(autoincrement())
+  customerId  Int
+  mechanicId  Int?
+  serviceId   Int
+  status      String    @default("Pending") // Pending, Assigned, In Progress, Completed, Cancelled
+  amount      Float
+  date        DateTime  @default(now())
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  mechanic    Mechanic? @relation(fields: [mechanicId], references: [id])
+  service     Service   @relation(fields: [serviceId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
