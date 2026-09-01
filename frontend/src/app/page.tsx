@@ -11,8 +11,9 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import MechanicsMap from '@/components/MechanicsMap';
 import ManagementTab from '@/components/ManagementTab';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-const socket = io(API_URL);
+// Empty io() tells Socket.io to connect to the current domain.
+// Next.js will automatically proxy the connection to AWS!
+const socket = io();
 
 export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState<any>(null);

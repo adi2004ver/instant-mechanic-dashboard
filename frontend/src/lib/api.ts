@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-
+// The base URL is now just '/api'. 
+// Next.js will automatically proxy this to AWS using the rewrites in next.config.ts!
 export const api = axios.create({
-  baseURL: `${API_URL}/api`,
+  baseURL: '/api',
 });

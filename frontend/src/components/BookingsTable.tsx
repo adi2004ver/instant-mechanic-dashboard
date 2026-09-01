@@ -9,8 +9,7 @@ import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { io } from 'socket.io-client';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-const socket = io(API_URL);
+const socket = io();
 
 export default function BookingsTable() {
   const [bookings, setBookings] = useState([]);

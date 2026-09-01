@@ -8,8 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Trash2 } from 'lucide-react';
 import { io } from 'socket.io-client';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-const socket = io(API_URL);
+const socket = io();
 
 export default function ManagementTab() {
   const [mechanics, setMechanics] = useState<any[]>([]);
