@@ -100,6 +100,58 @@ The application is designed to be deployed separately:
 1. **Frontend:** Deployed to **Vercel** by connecting the GitHub repository and setting the root directory to `frontend`.
 2. **Backend:** Deployed to **AWS Free Tier (EC2)** or another cloud provider like Render/Railway. The backend requires a Node.js environment. Since we used SQLite for this assignment to reduce setup friction, it will run locally on the EC2 instance (a persistent volume is recommended). In a real-world scenario, you would change `provider = "postgresql"` in `schema.prisma` and host the DB on AWS RDS.
 
+## Managing Your Deployment
+
+If you are hosting this on the AWS Free Tier, you may want to manage your server to avoid charges or restart it later. Here are your options:
+
+### Option 1: "Stop" the Instance (Pause it)
+Stopping the instance acts like turning off your computer. You won't incur compute charges, and your database and files are safely kept on the hard drive.
+**To restart it later:**
+1. Go to AWS EC2, select your instance, and click **Start instance**.
+2. AWS will assign a **new Public IP Address** to the server.
+3. You must copy this new IP address, go to your Vercel project settings, update the `NEXT_PUBLIC_API_URL` environment variable, and redeploy the frontend.
+4. SSH into the AWS server again and restart the backend: `pm2 start npm --name "backend" -- run dev`.
+
+### Option 2: Run it Locally (Private viewing)
+You do not need AWS to view your project. You can run it entirely on your own Windows machine:
+1. Open terminal and navigate to the project root.
+2. Open two separate terminal windows.
+3. In terminal 1: `cd backend && npm run dev`
+4. In terminal 2: `cd frontend && npm run dev`
+5. Open your browser to `http://localhost:3000`.
+
+### Option 3: Re-deploy from Scratch (If Terminated)
+If you select **Terminate Instance** in AWS, your server and database are permanently deleted. To get the website live again, you must completely rebuild the server:
+
+1. **Launch a new EC2 Instance:** Use Ubuntu 24.04 (Free Tier Eligible). Ensure your Security Group allows **Inbound Custom TCP on Port 5000** from Anywhere (`0.0.0.0/0`).
+2. **Connect via SSH** (EC2 Instance Connect).
+3. **Install Node.js & Git:**
+   ```bash
+   sudo apt update && sudo apt upgrade -y
+   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+   source ~/.bashrc
+   nvm install 20
+   ```
+4. **Clone & Setup:**
+   ```bash
+   git clone <your-github-repo-url>
+   cd instant-mechanic-dashboard/backend
+   npm install
+   
+   # Recreate the Environment variables
+   echo 'DATABASE_URL="file:./dev.db"' > .env
+   
+   # Setup and seed the Database
+   npx prisma db push
+   npx ts-node prisma/seed.ts
+   ```
+5. **Start the Server:**
+   ```bash
+   npm install -g pm2
+   pm2 start npm --name "backend" -- run dev
+   ```
+6. **Update Vercel:** Get the new Public IP of the instance and update your Vercel `NEXT_PUBLIC_API_URL` environment variable, then redeploy.
+
 ## AI Usage
 
 - **Which AI tools used:** Antigravity (Gemini 3.1 Pro)
