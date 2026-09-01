@@ -109,7 +109,7 @@ export default function BookingsTable() {
             onChange={(e) => setSearch(e.target.value)}
             className="w-1/3 bg-white dark:bg-zinc-950"
           />
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val || '')}>
             <SelectTrigger className="w-1/4 bg-white dark:bg-zinc-950">
               <SelectValue placeholder="Filter Status" />
             </SelectTrigger>
